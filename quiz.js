@@ -10,7 +10,7 @@ const restartButton = document.querySelector('#restart-btn');
 
 let currentQuestionIndex, score, questions;
 
-fetch('https://opentdb.com/api.php?amount=10&category=9')
+fetch('https://opentdb.com/api.php?amount=25')
     .then(response => response.json())
     .then(data => {
         questions = data.results.map((question, index) => ({
