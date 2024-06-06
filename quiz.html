@@ -4,8 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Quiz page</h1>
+    <div class="container">
+        <h1>Quiz</h1>
+        <div id="quiz-container">
+            <div id="question-container">
+                <h2 id="question">Question text</h2>
+                <div id="answer-buttons" class="btn-group">
+                    <!-- Answer buttons will go here -->
+                </div>
+            </div>
+            <button id="next-btn" class="btn hide">Next</button>
+            <button id="submit-btn" class="btn hide">Submit</button>
+        </div>
+        <div id="result-container" class="hide">
+            <h2 id="result">Your Score: </h2>
+            <button id="restart-btn" class="btn">Restart</button>
+        </div>
+    </div>
+
+    <script src="quiz.js"></script>
 </body>
 </html>
