@@ -1,7 +1,7 @@
 const quizContainer = document.querySelector('#quiz-container');
 const questionContainer = document.querySelector('#question-container');
 const questionElement = document.querySelector('#question');
-const answerButtonsElement = document.querySelector('#answer-buttons');
+const answerForm = document.querySelector('#answer-form');
 const nextButton = document.querySelector('#next-btn');
 const submitButton = document.querySelector('#submit-btn');
 const resultContainer = document.querySelector('#result-container');
@@ -42,67 +42,59 @@ function showQuestion(question) {
     resetState();
     questionElement.innerText = decodeHTML(question.question);
     question.answers.forEach(answer => {
-        const button = document.createElement('button');
-        button.innerText = decodeHTML(answer);
-        button.classList.add('btn');
-        if (answer === question.correct_answer) {
-            button.dataset.correct = true;
-        }
-        button.addEventListener('click', selectAnswer);
-        answerButtonsElement.appendChild(button);
+        const div = document.createElement('div');
+        div.classList.add('form-group');
+
+        const label = document.createElement('label');
+        
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'answer';
+        input.value = decodeHTML(answer);
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(decodeHTML(answer)));
+        
+        div.appendChild(label);
+        answerForm.appendChild(div);
     });
 }
 
 function resetState() {
     nextButton.classList.add('hide');
     submitButton.classList.add('hide');
-    while (answerButtonsElement.firstChild) {
-        answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+    while (answerForm.firstChild) {
+        answerForm.removeChild(answerForm.firstChild);
     }
 }
 
-function selectAnswer(e) {
-    const selectedButton = e.target;
-    const correct = selectedButton.dataset.correct === 'true';
+function selectAnswer() {
+    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    if (!selectedAnswer) {
+        alert('Please select an answer');
+        return;
+    }
+
+    const correct = selectedAnswer.value === decodeHTML(questions[currentQuestionIndex].correct_answer);
     if (correct) {
         score++;
     }
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct === 'true');
-    });
     if (questions.length > currentQuestionIndex + 1) {
-        nextButton.classList.remove('hide');
+        currentQuestionIndex++;
+        showQuestion(questions[currentQuestionIndex]);
     } else {
-        submitButton.classList.remove('hide');
+        showResult();
     }
 }
-
-function setStatusClass(element, correct) {
-    clearStatusClass(element);
-    if (correct) {
-        element.classList.add('btn-success');
-    } else {
-        element.classList.add('btn-danger');
-    }
-}
-
-function clearStatusClass(element) {
-    element.classList.remove('btn-success');
-    element.classList.remove('btn-danger');
-}
-
-nextButton.addEventListener('click', () => {
-    currentQuestionIndex++;
-    showQuestion(questions[currentQuestionIndex]);
-});
-
-submitButton.addEventListener('click', showResult);
 
 function showResult() {
     quizContainer.classList.add('hide');
     resultContainer.classList.remove('hide');
     resultElement.innerText = `Your Score: ${score} / ${questions.length}`;
 }
+
+nextButton.addEventListener('click', selectAnswer);
+submitButton.addEventListener('click', showResult);
 
 restartButton.addEventListener('click', startQuiz);
 
